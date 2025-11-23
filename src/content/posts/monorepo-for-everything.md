@@ -99,7 +99,7 @@ Wait, does using a monorepo mean we can't publish to npm anymore?
 :::
 
 :::unicorn{align="right"}
-Not at all! Most popular open source projects use this exact approach. Vercel, Svelte, Convex, Supabase—they all develop in monorepos with multiple packages, then publish to npm for external users. Internally, they get monorepo benefits (atomic commits, easy refactoring, shared tooling). Externally, users consume them as normal npm packages. Best of both worlds!
+Not at all! You can develop in monorepos with multiple packages, then publish their build artifacts to npm for external users. Internally, they get monorepo benefits (atomic commits, easy refactoring, shared tooling). Externally, users consume them as normal npm packages. Best of both worlds!
 
 
 And when you need versioning, monorepos work beautifully with tools like [**Changesets**](https://github.com/changesets/changesets). Developers add a markdown file describing changes, and Changesets handles semantic versioning, changelogs, and coordinated releases automatically.
