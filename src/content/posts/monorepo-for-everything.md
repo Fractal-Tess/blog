@@ -10,7 +10,9 @@ tags:
 draft: false
 ---
 
-There are only few topics that spark as much debate as the repository structure (at least that is the case for me and my boss). "Monorepo vs. Polyrepo" is the new "Sliders vs. Carousel", but with significantly higher stakes for the developer experience and the velocity of development.
+There are only few topics that spark as much debate as the repository structure  - at least that is the case for me and my boss.
+
+"Monorepo vs. Polyrepo" is the new "Sliders vs. Carousel", but with significantly higher stakes for the developer experience and the velocity of development.
 
 I'm here to take a stance: **You should be using a monorepo.** And not just for your company's microservices—but arguably for almost everything you build.
 
