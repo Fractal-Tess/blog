@@ -20,7 +20,7 @@ Is it perfect? No. Is it painful at times? Absolutely. But the alternatives are 
 
 ## The Concerns
 
-Let me address the elephant in the room — or rather, let's hear from a skeptical developer.
+Let me address the elephant in the room — or rather, let's hear from a skeptical duckveloper.
 
 :::duck
 This all sounds great in theory, but we already have multiple repositories set up. Can't we just migrate to a monorepo later when we have time?
