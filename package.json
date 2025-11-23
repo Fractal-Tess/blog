@@ -1,6 +1,6 @@
 {
-  "name": "psite",
-  "description": "A personal website built with Astro.",
+  "name": "blog",
+  "description": "A blog website for thoughts dumping",
   "type": "module",
   "version": "1.0.0",
   "scripts": {
