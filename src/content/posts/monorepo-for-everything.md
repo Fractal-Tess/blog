@@ -8,6 +8,7 @@ tags:
   - opinion
   - dx
 draft: false
+toc: true
 ---
 
 There are only few topics that spark as much debate as the repository structure  - at least that is the case for me and my boss.
@@ -22,6 +23,8 @@ Is it perfect? No. Is it painful at times? Absolutely. But the alternatives are 
 
 Let me address the elephant in the room — or rather, let's hear from a skeptical duckveloper who's never worked with a monorepo before.
 
+### Understanding Monorepos
+
 :::duck
 Wait, what even is a monorepo? I've always just had one repo per project. Why would I want everything in one place?
 :::
@@ -32,6 +35,8 @@ A monorepo is simply a single repository that contains multiple projects or pack
 The biggest win? When your frontend needs to use a function from the shared package, you just import it directly. No publishing to npm, no version management, no "which version of the shared package is the frontend using again?"
 :::
 
+### Managing Cognitive Load
+
 :::duck
 This sounds overwhelming. When I open a repository and see hundreds of directories and thousands of files, how am I supposed to manage that cognitive load?
 :::
@@ -41,6 +46,8 @@ I hear this a lot, but it's largely a tooling problem that's already solved. Mod
 
 But here's the real benefit: when Service A talks to Service B and something breaks, you can jump directly to both codebases in the same editor. No cloning different repos, no multiple windows, no context switching. You can search across both services simultaneously and trace the entire request lifecycle. What seemed like a size problem becomes a debugging superpower.
 :::
+
+### Code Ownership
 
 :::duck
 What about ownership? In separate repos, if you own the repository, you own the code. But in a monorepo, who owns the shared libraries?
@@ -65,6 +72,8 @@ Use **CODEOWNERS** files. They let you set directory-level permissions—when so
 ## The Real-World Scenarios
 
 Now for the practical questions—the scenarios that come up in actual development.
+
+### Sharing Code Between Services
 
 :::duck
 Okay, so how do we share code between services? Do we publish libraries to npm and then import them?
@@ -117,8 +126,23 @@ A monorepo with multiple packages, change tracking and version managment by chan
 
 ---
 
+### Dependency Management and Storage
 
 :::duck
+But wait—if I have ten packages in a monorepo, and they all use React, won't I be installing React ten times? That's a lot of wasted disk space and slow installs.
+:::
+
+:::unicorn{align="right"}
+Great question! Modern package managers like **pnpm** and **yarn** with workspaces solve this with a clever trick: they use a central store for dependencies and create hard links or symlinks. So if ten packages need React 18.2.0, you only download it once. Each package gets a link to the same files in the central store.
+
+The result? A monorepo with 50 packages might have the same disk footprint as those same 50 packages as separate repos—maybe even less, since you're not duplicating all those `node_modules` folders. Install times are also faster because the package manager can deduplicate and cache more effectively.
+
+Even with npm, hoisting (where dependencies are lifted to the root `node_modules`) reduces duplication significantly. Tools like Turborepo and Nx take this further by sharing build artifacts and caches across packages.
+:::
+
+### Refactoring and Atomic Changes
+
+:::duck{align="left"}
 Speaking of changes—what about refactoring? Don't atomic changes across the entire codebase become risky?
 :::
 
@@ -130,6 +154,8 @@ Actually, it's the opposite. Want to change a core API method's signature? In a 
 **Codemods at Scale**: This structure allows you to run AST transformations across the entire company.
 :::
 
+### Test Failures and CI
+
 :::duck
 But if one test fails, doesn't that block everyone from merging?
 :::
@@ -137,6 +163,8 @@ But if one test fails, doesn't that block everyone from merging?
 :::unicorn{align="right"}
 In a mature monorepo setup, breaking `main` should be theoretically impossible. CI runs tests across the *entire affected graph* for every PR. If you modify a shared utility, CI automatically identifies all dependent services and validates them before allowing the merge. Tools like merge queues ensure that even if two PRs pass individually, they're validated together before landing.
 :::
+
+### Build Systems and Tooling
 
 :::duck
 This all sounds complex to set up. Don't I need a PhD in build systems?
@@ -147,6 +175,8 @@ That's an outdated myth from the pre-2020 era. Modern tools like **Turborepo** a
 
 Creating a new library is often just `mkdir packages/new-lib`. Your new package immediately inherits all organizational standards—linting, testing, build configuration. Within minutes, other packages can import from it.
 :::
+
+### Build Performance
 
 :::duck
 Okay, but surely builds must take forever with everything in one place?
@@ -162,6 +192,8 @@ It used to. But tools like **Turborepo**, **Nx**, and **Bazel** changed the game
 **Parallel Builds**: Modern tools understand the dependency graph and build independent packages simultaneously, maximizing CPU utilization.
 :::
 
+### Code Organization
+
 :::duck
 What about keeping code organized? Won't everything become spaghetti?
 :::
@@ -169,6 +201,8 @@ What about keeping code organized? Won't everything become spaghetti?
 :::unicorn{align="right"}
 Monorepos are actually the best tool for **Domain Driven Design**. With tools like Nx's module boundaries or ESLint rules, you can define strict architectural boundaries. For example, enforce that the `payment` domain can never import from `social-features`. These boundaries are *enforced at build time* rather than relying on organizational discipline.
 :::
+
+### What About Small Projects?
 
 :::duck
 Okay, I'm sold on the benefits for large companies with multiple services. But why did you say we should use monorepos for *everything*? That seems extreme for small projects.
@@ -186,6 +220,8 @@ Think of it like buying a dining table that can extend. Sure, you might only nee
 
 Maybe you're reading this and thinking: "This all sounds great, but we already have multiple repositories set up. Can't we just migrate to a monorepo later when we have time?"
 
+### The Migration Challenge
+
 :::duck
 This all sounds great in theory, but we already have multiple repositories set up. Can't we just migrate to a monorepo later when we have time?
 :::
@@ -195,6 +231,8 @@ Ah, the classic "we'll do it later" trap! Here's the thing: if your codebase has
 
 That's why starting with a monorepo from day one is so important. It's like trying to merge lanes in heavy traffic versus starting in the right lane from the beginning.
 :::
+
+### Tooling Consistency
 
 :::duck
 But doesn't forcing everyone to use the same tools and versions feel restrictive? Teams lose their autonomy to choose their own frameworks and build tools.
