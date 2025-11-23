@@ -71,7 +71,7 @@ Use **CODEOWNERS** files. They let you set directory-level permissions—when so
 
 ## The Real-World Scenarios
 
-Now for the practical questions—the scenarios that come up in actual development.
+Now for the practical questions — the scenarios that come up in actual development.
 
 ### Sharing Code Between Services
 
