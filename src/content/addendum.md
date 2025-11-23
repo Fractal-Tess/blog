@@ -4,4 +4,4 @@ avatarImage:
   alt: 'Fractal Tess avatar'
 ---
 
-Thanks for reading! Perhaps you'd be interested in one of the things below?
+Thanks for reading! I hope you enjoyed the article and found it helpful. If you have any questions or feedback, please feel free to reach out to me.

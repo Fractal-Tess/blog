@@ -306,7 +306,7 @@ article img {
   strong,
   th,
   button {
-    @apply font-semibold;
+    @apply font-extrabold;
   }
 
   a {

@@ -178,7 +178,7 @@ Over here, to the right!
 
 GitHub overview cards heavily inspired by [Astro Cactus](https://github.com/chrismwilliams/astro-theme-cactus).
 
-```md title="GitHub repo card example in markdown"
+<!-- ```md title="GitHub repo card example in markdown"
 ::github{repo="stelcodes/multiterm-astro"}
 ```
 
@@ -188,7 +188,7 @@ GitHub overview cards heavily inspired by [Astro Cactus](https://github.com/chri
 ::github{user="withastro"}
 ```
 
-::github{user="withastro"}
+::github{user="withastro"} -->
 
 ## Emoji :star_struck:
 
