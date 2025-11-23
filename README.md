@@ -1,3 +1,3 @@
-# PSite
+# Blog
 
-A personal website for writing down thoughts and ideas about technology, programming, and cybersecurity adventures.
+Just a simple astro project that serves as my opinion dump that no one should care about
