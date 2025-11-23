@@ -20,16 +20,16 @@ Is it perfect? No. Is it painful at times? Absolutely. But the alternatives are 
 
 ## The Concerns
 
-Let me address the elephant in the room — or rather, let's hear from a skeptical duckveloper.
+Let me address the elephant in the room — or rather, let's hear from a skeptical duckveloper who's never worked with a monorepo before.
 
 :::duck
-This all sounds great in theory, but we already have multiple repositories set up. Can't we just migrate to a monorepo later when we have time?
+Wait, what even is a monorepo? I've always just had one repo per project. Why would I want everything in one place?
 :::
 
 :::unicorn{align="right"}
-Ah, the classic "we'll do it later" trap! Here's the thing: if your codebase has already sprawled across multiple repos, migrating becomes exponentially harder. It's not just moving files around—you're untangling years of dependency spaghetti, synchronizing build pipelines, and retraining entire teams. I've seen migration projects get quoted at 6 months and never get approved.
+A monorepo is simply a single repository that contains multiple projects or packages. Instead of having `my-app-frontend`, `my-app-backend`, and `my-app-shared` as separate repos, you'd have one repo with `apps/frontend`, `apps/backend`, and `packages/shared` folders.
 
-That's why starting with a monorepo from day one is so important. It's like trying to merge lanes in heavy traffic versus starting in the right lane from the beginning.
+The biggest win? When your frontend needs to use a function from the shared package, you just import it directly. No publishing to npm, no version management, no "which version of the shared package is the frontend using again?"
 :::
 
 :::duck
@@ -61,16 +61,6 @@ Use **CODEOWNERS** files. They let you set directory-level permissions—when so
 # Backend team owns the API
 /apps/api/ @org/backend-leads
 ```
-
-
-:::duck
-But doesn't forcing everyone to use the same tools and versions feel restrictive? Teams lose their autonomy to choose their own frameworks and build tools.
-:::
-
-:::unicorn{align="right"}
-While it sounds restrictive, it's actually a blessing. In polyrepo setups, autonomy leads to fragmentation: five different testing frameworks, incompatible TypeScript versions, configs no one understands. The monorepo's alignment reduces cognitive overhead through consistency. Once you learn the patterns in one part of the codebase, those patterns apply everywhere. It eliminates decision fatigue, and the friction of alignment pays off in mobility and standardized excellence.
-:::
-
 
 ## The Real-World Scenarios
 
@@ -190,6 +180,28 @@ Here's the thing: you never know which project will grow. That side project you'
 Starting with a monorepo costs you nothing—even with a single project inside. You still get the benefits of modern tooling like remote caching and fast builds. But you've already laid the foundation. When you need to add that second app or extract a shared library, the infrastructure is ready and waiting. No migration, no refactoring, no lost productivity.
 
 Think of it like buying a dining table that can extend. Sure, you might only need four seats today, but having the option costs nothing and saves you from buying a whole new table later.
+:::
+
+## What If I Already Have Multiple Repos?
+
+Maybe you're reading this and thinking: "This all sounds great, but we already have multiple repositories set up. Can't we just migrate to a monorepo later when we have time?"
+
+:::duck
+This all sounds great in theory, but we already have multiple repositories set up. Can't we just migrate to a monorepo later when we have time?
+:::
+
+:::unicorn{align="right"}
+Ah, the classic "we'll do it later" trap! Here's the thing: if your codebase has already sprawled across multiple repos, migrating becomes exponentially harder. It's not just moving files around—you're untangling years of dependency spaghetti, synchronizing build pipelines, and retraining entire teams. It's a huge effort and a lot of work - no one wants to do it.
+
+That's why starting with a monorepo from day one is so important. It's like trying to merge lanes in heavy traffic versus starting in the right lane from the beginning.
+:::
+
+:::duck
+But doesn't forcing everyone to use the same tools and versions feel restrictive? Teams lose their autonomy to choose their own frameworks and build tools.
+:::
+
+:::unicorn{align="right"}
+While it sounds restrictive, it's actually a blessing. In polyrepo setups, autonomy leads to fragmentation: five different testing frameworks, incompatible TypeScript versions, configs no one understands. The monorepo's alignment reduces cognitive overhead through consistency. Once you learn the patterns in one part of the codebase, those patterns apply everywhere. It eliminates decision fatigue, and the friction of alignment pays off in mobility and standardized excellence.
 :::
 
 ## You're in Good Company
