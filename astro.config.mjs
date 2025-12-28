@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config'
 import tailwindcss from '@tailwindcss/vite'
 import sitemap from '@astrojs/sitemap'
+import react from '@astrojs/react'
 import mdx from '@astrojs/mdx'
 import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
@@ -74,6 +75,7 @@ export default defineConfig({
       },
       plugins: [pluginLineNumbers()],
     }), // Must come after expressive-code integration
+    react(),
     mdx(),
   ],
   experimental: {

@@ -15,7 +15,7 @@ There are only few topics that spark as much debate as the repository structure 
 
 "Monorepo vs. Polyrepo" is the new "Sliders vs. Carousel", but with significantly higher stakes for the developer experience and the velocity of development.
 
-I'm here to take a stance: **You should be using a monorepo.** And not just for your company's microservices—but arguably for almost everything you build.
+I'm here to take a stance: **You should be using a monorepo.** And not just for your company's microservices — but arguably for almost everything you build.
 
 Is it perfect? No. Is it painful at times? Absolutely. But the alternatives are often silent killers of productivity.
 
@@ -42,7 +42,7 @@ This sounds overwhelming. When I open a repository and see hundreds of directori
 :::
 
 :::unicorn{align="right"}
-I hear this a lot, but it's largely a tooling problem that's already solved. Modern IDEs let you focus on exactly what you need—most developers only interact with 5-10% of the codebase daily. Use VS Code's workspace settings, "Exclude from Search", or just good folder structures to narrow your focus to the `apps/my-service` directory you actually care about.
+I hear this a lot, but it's largely a tooling problem that's already solved. Modern IDEs let you focus on exactly what you need — most developers only interact with 5-10% of the codebase daily. Use VS Code's workspace settings, "Exclude from Search", or just good folder structures to narrow your focus to the `apps/my-service` directory you actually care about.
 
 But here's the real benefit: when Service A talks to Service B and something breaks, you can jump directly to both codebases in the same editor. No cloning different repos, no multiple windows, no context switching. You can search across both services simultaneously and trace the entire request lifecycle. What seemed like a size problem becomes a debugging superpower.
 :::
@@ -54,7 +54,7 @@ What about ownership? In separate repos, if you own the repository, you own the 
 :::
 
 :::unicorn{align="right"}
-Use **CODEOWNERS** files. They let you set directory-level permissions—when someone opens a PR touching files in a protected directory, the system automatically requests reviews from the designated owners. You get the clarity of polyrepo ownership with monorepo convenience.
+Use **CODEOWNERS** files. They let you set directory-level permissions — when someone opens a PR touching files in a protected directory, the system automatically requests reviews from the designated owners. You get the clarity of polyrepo ownership with monorepo convenience.
 :::
 
 
@@ -90,7 +90,7 @@ What about git submodules?
 :::unicorn{align="right"}
 Even worse. Submodules are notorious: nested `.git` directories, manual update commands, detached HEAD states, merge conflicts in `.gitmodules`. When someone updates the submodule, everyone else needs to manually pull and update.
 
-In a monorepo, you edit the code in `packages/shared-utils`, run tests for all dependent apps immediately, and merge. Everyone is on the latest version instantly—no publishing, no version management nightmare.
+In a monorepo, you edit the code in `packages/shared-utils`, run tests for all dependent apps immediately, and merge. Everyone is on the latest version instantly — no publishing, no version management nightmare.
 :::
 
 :::duck
@@ -129,13 +129,13 @@ A monorepo with multiple packages, change tracking and version managment by chan
 ### Dependency Management and Storage
 
 :::duck
-But wait—if I have ten packages in a monorepo, and they all use React, won't I be installing React ten times? That's a lot of wasted disk space and slow installs.
+But wait — if I have ten packages in a monorepo, and they all use React, won't I be installing React ten times? That's a lot of wasted disk space and slow installs.
 :::
 
 :::unicorn{align="right"}
 Great question! Modern package managers like **pnpm** and **yarn** with workspaces solve this with a clever trick: they use a central store for dependencies and create hard links or symlinks. So if ten packages need React 18.2.0, you only download it once. Each package gets a link to the same files in the central store.
 
-The result? A monorepo with 50 packages might have the same disk footprint as those same 50 packages as separate repos—maybe even less, since you're not duplicating all those `node_modules` folders. Install times are also faster because the package manager can deduplicate and cache more effectively.
+The result? A monorepo with 50 packages might have the same disk footprint as those same 50 packages as separate repos — maybe even less, since you're not duplicating all those `node_modules` folders. Install times are also faster because the package manager can deduplicate and cache more effectively.
 
 Even with npm, hoisting (where dependencies are lifted to the root `node_modules`) reduces duplication significantly. Tools like Turborepo and Nx take this further by sharing build artifacts and caches across packages.
 :::
@@ -143,7 +143,7 @@ Even with npm, hoisting (where dependencies are lifted to the root `node_modules
 ### Refactoring and Atomic Changes
 
 :::duck{align="left"}
-Speaking of changes—what about refactoring? Don't atomic changes across the entire codebase become risky?
+Speaking of changes — what about refactoring? Don't atomic changes across the entire codebase become risky?
 :::
 
 :::unicorn{align="right"}
@@ -173,7 +173,7 @@ This all sounds complex to set up. Don't I need a PhD in build systems?
 :::unicorn{align="right"}
 That's an outdated myth from the pre-2020 era. Modern tools like **Turborepo** are almost zero-config. Add a simple `turbo.json` file, run `npx turbo build`, and you're done. No complex Webpack configs, no custom CI scripts. Today's tools learned from years of battle-testing at companies like Vercel and Google, packaging all that complexity into simple, ergonomic interfaces.
 
-Creating a new library is often just `mkdir packages/new-lib`. Your new package immediately inherits all organizational standards—linting, testing, build configuration. Within minutes, other packages can import from it.
+Creating a new library is often just `mkdir packages/new-lib`. Your new package immediately inherits all organizational standards — linting, testing, build configuration. Within minutes, other packages can import from it.
 :::
 
 ### Build Performance
@@ -211,7 +211,7 @@ Okay, I'm sold on the benefits for large companies with multiple services. But w
 :::unicorn{align="right"}
 Here's the thing: you never know which project will grow. That side project you're building alone today might need a mobile app next month, or a CLI tool, or a separate admin dashboard. By the time you realize you need multiple packages, you're already dealing with the pain of splitting things up or managing multiple repos.
 
-Starting with a monorepo costs you nothing—even with a single project inside. You still get the benefits of modern tooling like remote caching and fast builds. But you've already laid the foundation. When you need to add that second app or extract a shared library, the infrastructure is ready and waiting. No migration, no refactoring, no lost productivity.
+Starting with a monorepo costs you nothing — even with a single project inside. You still get the benefits of modern tooling like remote caching and fast builds. But you've already laid the foundation. When you need to add that second app or extract a shared library, the infrastructure is ready and waiting. No migration, no refactoring, no lost productivity.
 
 Think of it like buying a dining table that can extend. Sure, you might only need four seats today, but having the option costs nothing and saves you from buying a whole new table later.
 :::
@@ -227,7 +227,7 @@ This all sounds great in theory, but we already have multiple repositories set u
 :::
 
 :::unicorn{align="right"}
-Ah, the classic "we'll do it later" trap! Here's the thing: if your codebase has already sprawled across multiple repos, migrating becomes exponentially harder. It's not just moving files around—you're untangling years of dependency spaghetti, synchronizing build pipelines, and retraining entire teams. It's a huge effort and a lot of work - no one wants to do it.
+Ah, the classic "we'll do it later" trap! Here's the thing: if your codebase has already sprawled across multiple repos, migrating becomes exponentially harder. It's not just moving files around — you're untangling years of dependency spaghetti, synchronizing build pipelines, and retraining entire teams. It's a huge effort and a lot of work - no one wants to do it.
 
 That's why starting with a monorepo from day one is so important. It's like trying to merge lanes in heavy traffic versus starting in the right lane from the beginning.
 :::
@@ -246,7 +246,7 @@ While it sounds restrictive, it's actually a blessing. In polyrepo setups, auton
 
 If you're still skeptical, consider that the world's most sophisticated engineering organizations figured this out decades ago:
 
-* **Google**: Their monorepo contains billions of lines of code—they literally built **Bazel** to make it work at that scale.
+* **Google**: Their monorepo contains billions of lines of code — they literally built **Bazel** to make it work at that scale.
 * **Meta**: Runs tens of thousands of developers in a single repository.
 * **Uber**: Migrated from thousands of polyrepos specifically to solve dependency hell, with documented improvements in their first year.
 

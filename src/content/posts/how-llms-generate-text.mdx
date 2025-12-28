@@ -1,0 +1,242 @@
+---
+title: "How LLMs Actually Generate Text (Every Dev Should Know This)"
+published: 2025-12-28
+description: "Peek behind the curtain of ChatGPT, Claude, and friends. Interactive visualizations show what happens from prompt to response."
+tags: [llm, ai, machine-learning, visualization, interactive]
+draft: false
+toc: true
+category: Technical
+---
+
+import TokenVisualization from '~/components/animations/llm/TokenVisualization.tsx'
+import EmbeddingSpaceVisualization from '~/components/animations/llm/EmbeddingSpaceVisualization.tsx'
+import EmbeddingMath from '~/components/animations/llm/EmbeddingMath.tsx'
+import AttentionExample from '~/components/animations/llm/AttentionExample.tsx'
+import ProbabilityDistribution from '~/components/animations/llm/ProbabilityDistribution.tsx'
+import SamplingVisualization from '~/components/animations/llm/SamplingVisualization.tsx'
+import GenerationLoop from '~/components/animations/llm/GenerationLoop.tsx'
+
+## The Illusion of Intelligence
+
+Here's a thought that might break your brain: when you ask ChatGPT a question, it has *absolutely no idea* what it's going to say. Not the full sentence. Not even the next word.
+
+Every response you've ever received was constructed one tiny piece at a time — each piece a calculated gamble from a pool of over 100,000 options.
+
+This post is about what happens in that fraction of a second between you hitting send and text appearing on screen.
+
+---
+
+At the core of every large language model lies a remarkable pipeline that transforms your simple text prompt into coherent, contextual responses. This five-stage process happens in milliseconds, yet represents billions of carefully calibrated calculations.
+
+Each stage builds upon the last: text gets chopped into meaningful pieces, those pieces become mathematical vectors, attention mechanisms weave together context, probabilities emerge for every possible next token, and finally — through sampling — a single token is chosen. Then the loop repeats, generating your response one token at a time until completion.
+
+Every LLM, such as GPT-4, Claude, Llama, Gemini or other follow this same fundamental pipeline. The magic isn't in any single step; it's in how they chain together at unprecedented scale.
+
+---
+
+## Step 1: Tokenization — Breaking Language Into Atoms
+
+The first thing that happens to your prompt is brutal dismemberment.
+
+Your text gets chopped into chunks called **tokens**. Each chunk — whether a full word, part of a word, or punctuation — gets assigned a unique number. Short, common words like "the" usually stay as one token. But longer or rarer words get split into multiple pieces, so "antidisestablishmentarianism" might become five or six separate tokens.
+
+Here's the process in action:
+
+<TokenVisualization client:visible />
+
+Each token gets assigned a unique numeric ID — `#40` for "I", `#1337` for "love", `#5421` for "programming". These IDs are what actually enter the neural network: a sequence of integers. The model never sees your actual text, only these numbers.
+
+The tokenizer was trained on massive text corpora to find statistically efficient splits. Common patterns get their own token; rare strings get sliced up. "Programming" might be one token, but "indistinguishable" becomes three or four.
+
+This isn't the model being smart — it's pre-processing. The neural network hasn't even woken up yet.
+
+---
+
+## Step 2: Embeddings — Where Meaning Gets Coordinates
+
+Token IDs are just indexes in a lookup table. Meaningless. The model needs semantic understanding.
+
+So every token gets transformed into a **vector** — a list of numbers representing that token's meaning. We're talking *thousands* of dimensions. GPT-3 uses 12,288 numbers per token. Llama 3 uses 8,192.
+
+These aren't random numbers. They're *learned* coordinates in a meaning space.
+
+*(Note: Real embedding spaces have thousands of dimensions — we can only visualize 3 here, but the same geometric relationships apply regardless of dimensionality.)*
+
+<EmbeddingSpaceVisualization client:visible />
+
+Rotate that visualization. Zoom in. Notice how:
+
+- "King" and "queen" cluster together
+- "Python" the language hangs out near "JavaScript"
+- "Python" the snake is off in a completely different region
+
+The model discovered these relationships by reading the internet. Nobody told it "king" relates to "queen" — it figured it out from context.
+
+### The Vector Arithmetic Trick
+
+<EmbeddingMath client:visible />
+
+This is where embeddings get spooky. If you take the vector for "king", subtract "man", and add "woman":
+
+$$ \vec{king} - \vec{man} + \vec{woman} \approx \vec{queen} $$
+
+The model encoded *gender as a direction* in high-dimensional space. It encoded *royalty as a location*. These abstractions emerged purely from statistical patterns in text.
+
+The same pattern emerges with programming concepts. "Function", "method", and "callback" cluster together as neighbors. "Database", "query", and "schema" form another neighborhood. The model doesn't know what a function *is* — it just knows that "function" appears in similar contexts to "method". And that's enough.
+
+---
+
+## Step 3: Attention — The Spotlight Operator
+
+Your embedding vectors flow into the transformer — the actual neural network. Billions of parameters. But one mechanism makes the whole thing work: **attention**.
+
+### The Core Intuition
+
+Imagine a spotlight operator at a concert. The music shifts, they swing the light. Guitar solo? Spotlight the guitarist. Vocal bridge? Find the singer.
+
+Attention does the same thing, but for tokens.
+
+<AttentionExample client:visible />
+
+Read this: *"The cat sat on the mat because it was tired."*
+
+What does "it" refer to? The cat, obviously. Not the mat.
+
+When the model processes "it", it assigns high attention weight to "cat" and low weight to "mat" — even though "mat" is literally closer. Why? Because across millions of examples, "was tired" patterns with animals, not furniture.
+
+### Scale That Up
+
+This attention calculation doesn't happen once. In GPT-style models, each self-attention layer has **64 parallel attention heads**. Each head uses vectors with a dimension of 64 — the key, query, and value projections transform embedding vectors from a size of 2,880 down to 64.
+
+These heads operate in parallel, with each head capturing different relationships. Some heads focus on syntax, others on semantic relationships, others on longer-range dependencies.
+
+This happens across dozens or hundreds of layers:
+
+| Model | Attention Layers |
+|-------|-----------------|
+| GPT-3 | 96 |
+| Llama 3 70B | 80 |
+| GPT-style | 64 parallel heads (dim 64, proj: 2880→64) |
+
+Each layer refines. Each layer builds abstraction. What exits? Vectors that encode not just individual token meanings, but rich contextual understanding of the *entire* input.
+
+---
+
+## Step 4: Probabilities — The Moment of Uncertainty
+
+The transformer's done its work. Now comes the question: **what token comes next?**
+
+The final layer produces a raw score — called a **logit** — for *every single token in the vocabulary*. Llama 3 has 128,000 tokens. Each one gets a score.
+
+Then we apply **softmax** to convert scores into probabilities:
+
+$$ P(token_i) = \frac{e^{score_i}}{\sum_{j} e^{score_j}} $$
+
+<ProbabilityDistribution client:visible />
+
+Stare at that distribution. The model isn't "deciding" what to say. It's outputting a probability landscape over 100,000+ possibilities. Your response is just *one path* through an enormous probability space.
+
+Most tokens have near-zero probability. A handful are plausible. The top few are likely. But "likely" doesn't mean "certain."
+
+---
+
+## Step 5: Sampling — Rolling the Dice
+
+Now we pick. And this is where *you* have control.
+
+### The Boring Default: Greedy Decoding
+
+Always pick the highest probability. Consistent, predictable, often repetitive.
+
+### The Interesting Lever: Temperature
+
+<SamplingVisualization client:visible />
+
+Temperature reshapes the probability distribution:
+
+| Temperature | Effect | Use Case |
+|-------------|--------|----------|
+| 0.2–0.4 | Sharp distribution. Top token dominates. | Code generation, data extraction |
+| 0.7–1.0 | Balanced. Top tokens compete fairly. | General conversation |
+| 1.2+ | Flattened. Unlikely tokens get real chances. | Creative writing, brainstorming |
+
+High temperature doesn't make the model "more creative." It makes it more *random*. Creativity is your interpretation.
+
+### nucleus Sampling (Top-P)
+
+Instead of flattening probabilities, only sample from the smallest set of tokens whose probabilities sum to P.
+
+If top-P = 0.9, you might sample from 15 tokens (confident prediction) or 500 tokens (uncertain prediction), depending on the distribution shape.
+
+### The Loop
+
+<GenerationLoop client:visible />
+
+One token selected. We're done, right?
+
+No. We just generated *one* token.
+
+Append it to the input. Run the entire pipeline again:
+
+**Tokenize → Embed → Transform → Probabilities → Sample**
+
+Repeat. For every. Single. Token.
+
+For "What is Python?", that's:
+1. Pass 1: → "Python"
+2. Pass 2: → "is"
+3. Pass 3: → "a"
+4. Pass 4: → "high"
+5. ...until EOS token or length limit
+
+This is why generation slows down for long responses. Each new token requires attention over *all* previous tokens. Quadratic complexity.
+
+And this is why the model genuinely doesn't know what it will say. Token 50 isn't computed until token 49 is done. There's no script.
+
+---
+
+## Three Things This Changes
+
+### 1. Hallucinations Aren't Lies
+
+The model isn't being deceptive when it confidently states false information. It's generating text that *pattern-matches* to what confident, true-sounding text looks like.
+
+The probability distribution doesn't distinguish truth from plausibility. "The Eiffel Tower is 324 meters tall" and "The Eiffel Tower is 400 meters tall" might have similar probabilities if both sound reasonable in context.
+
+**Takeaway:** Verify facts. Always. Especially when the model sounds confident.
+
+### 2. Context Limits Are Physics, Not Business
+
+"Why can't I send my entire codebase?" Because attention has $O(n^2)$ complexity. Every token attends to every other token. Double the context, quadruple the compute.
+
+128K context windows aren't generous — they're expensive engineering achievements.
+
+**Takeaway:** Respect context limits. Summarize. Chunk. Don't rage at the 4096 barrier.
+
+### 3. Prompts Are Programming
+
+Your prompt is literally the input that shapes the probability landscape. Small changes create different distributions create different outputs.
+
+"Explain recursion" vs "Explain recursion like I'm 5" aren't just different requests — they prime different probability distributions over the vocabulary.
+
+**Takeaway:** Prompt engineering is real. Not because the model "understands" your intent, but because different inputs yield genuinely different probability landscapes.
+
+---
+
+## The Bottom Line
+
+Next time you use an LLM, try to see what's actually happening:
+
+1. Your words get sliced into tokens
+2. Each token becomes a meaning vector
+3. Attention connects context across the sequence
+4. Probabilities emerge over 100,000+ options
+5. One token gets sampled. Repeat.
+
+It's not magic. It's statistics at scale.
+
+In essence, LLMs are glorified autocomplete. But what a glorification — billions of parameters, massive datasets, and clever architecture turn "predict the next word" into something that feels like reasoning.
+
+And understanding the statistics makes you a better user, a better prompt engineer, and a better builder.
+
+Now go break something.
